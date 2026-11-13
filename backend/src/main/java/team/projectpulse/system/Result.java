@@ -16,6 +16,7 @@ public class Result {
 
 
     public Result() {
+        // For Jackson, which deserializes a Result (in tests and clients) through the no-arg constructor and setters
     }
 
     public Result(boolean flag, Integer code, String message) {

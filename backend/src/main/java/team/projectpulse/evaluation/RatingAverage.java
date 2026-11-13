@@ -7,6 +7,7 @@ public class RatingAverage {
 
 
     public RatingAverage() {
+        // For Jackson and bean-style construction; the two-argument constructor is the usual path
     }
 
     public RatingAverage(Integer criterionId, Double averageScore) {
