@@ -13,5 +13,32 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>PMD quickstart, with Project Pulse's decisions.</description>
     <rule ref="rulesets/java/quickstart.xml">
+        <!-- D2: narrowed, re-added below with JPA entities exempted. -->
+        <exclude name="UncommentedEmptyConstructor"/>
+        <exclude name="UnnecessaryConstructor"/>
+        <!-- D4: off. Every log call in Project Pulse uses SLF4J {} placeholders, so the message is only
+             formatted after the level check; the arguments at all four flagged sites are field getters
+             or a size(), which cost nothing to evaluate. An isXxxEnabled() guard would add three lines per
+             call and save no work. If a log argument is ever expensive, guard that call on its merits. -->
+        <exclude name="GuardLogStatement"/>
+    </rule>
+
+    <!-- D2: UncommentedEmptyConstructor and UnnecessaryConstructor are off in JPA @Entity classes and
+         enforced everywhere else. The JPA spec requires every entity to have a public or protected
+         no-arg constructor; it is empty by definition, and it is kept explicit even when it is the only
+         constructor so that adding a convenience constructor later cannot silently remove it (Hibernate
+         would then fail at runtime with "No default constructor for entity"). 34 of the 40 findings were
+         entity constructors; the other 6, in DTOs and Result, were fixed. -->
+    <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="./ancestor-or-self::ClassDeclaration[1][pmd-java:hasAnnotation('jakarta.persistence.Entity')]"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/UnnecessaryConstructor">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="./ancestor-or-self::ClassDeclaration[1][pmd-java:hasAnnotation('jakarta.persistence.Entity')]"/>
+        </properties>
     </rule>
 </ruleset>

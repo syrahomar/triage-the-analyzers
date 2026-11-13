@@ -2,7 +2,11 @@ package team.projectpulse.ram.document;
 
 import org.springframework.data.jpa.domain.Specification;
 
-public class RequirementDocumentSpecs {
+public final class RequirementDocumentSpecs {
+
+    private RequirementDocumentSpecs() {
+        // Static Specification factories only; never instantiated
+    }
 
     public static Specification<RequirementDocument> hasType(DocumentType providedType) {
         return (root, query, criteriaBuilder) ->

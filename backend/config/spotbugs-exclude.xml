@@ -7,4 +7,15 @@
 
      Unlike the baseline, this file may grow, but every entry is a reviewed decision. -->
 <FindBugsFilter>
+  <!-- D1: EI_EXPOSE_REP and EI_EXPOSE_REP2 are off project-wide. The rule protects an object's invariants
+       from callers that keep a reference to its mutable fields. Of the 219 findings on 2026-11-01:
+       144 are JPA entity associations and collections, which must be the live references Hibernate
+       manages (a defensive copy in a getter or setter detaches the collection from dirty checking and
+       orphan removal, so edits are silently not saved); 27 are Spring beans holding constructor-injected
+       singletons, which are shared by design; and the remaining 48 are records, DTOs and per-request
+       holders (34 records, PeerEvaluationAverage, MyUserPrincipal wrapping the user entity, ...) built to be
+       serialized or read and then discarded, which own no invariant over what they hold. None
+       is a case of an object handing out state it needs to protect. SpotBugs filters cannot match
+       by annotation, so narrowing to "non-entities" would be a hand-kept class list that rots. -->
+  <Match><Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/></Match>
 </FindBugsFilter>
